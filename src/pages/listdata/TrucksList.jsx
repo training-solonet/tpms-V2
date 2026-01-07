@@ -350,7 +350,9 @@ const TrucksFormList = () => {
         String(t.address || '').toLowerCase().includes(q);
       const matchesCluster = !cluster || t.cluster === cluster;
       const matchesVendor = !vendorFilter || t.vendor_id === vendorFilter;
-      const matchesStatus = !statusFilter || t.status === statusFilter;
+      // Handle 'active' filter to include both 'active' and 'operational'
+      const matchesStatus = !statusFilter || 
+        (statusFilter === 'active' ? (t.status === 'active' || t.status === 'operational') : t.status === statusFilter);
       return matchesQ && matchesCluster && matchesVendor && matchesStatus;
     });
 
@@ -469,7 +471,17 @@ const TrucksFormList = () => {
     window.location.href = `/trucks/${id}`;
   };
 
-  const statusOptions = ['active', 'idle', 'maintenance', 'operational', 'out-of-service'];
+  const statusOptions = ['active', 'idle', 'maintenance', 'inactive'];
+
+  // Hitung statistik status
+  const statusStats = React.useMemo(() => {
+    return {
+      active: activeTrucks.filter((t) => t.status === 'active' || t.status === 'operational').length,
+      idle: activeTrucks.filter((t) => t.status === 'idle').length,
+      maintenance: activeTrucks.filter((t) => t.status === 'maintenance').length,
+      inactive: activeTrucks.filter((t) => t.status === 'inactive').length,
+    };
+  }, [activeTrucks]);
 
   return (
     <TailwindLayout>
@@ -566,13 +578,7 @@ const TrucksFormList = () => {
                 </div>
                 <div>
                   <p className="text-xs text-gray-600 font-medium">Active</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {
-                      activeTrucks.filter(
-                        (t) => t.status === 'active' || t.status === 'operational'
-                      ).length
-                    }
-                  </p>
+                  <p className="text-2xl font-bold text-gray-900">{statusStats.active}</p>
                 </div>
               </div>
             </div>
@@ -595,9 +601,7 @@ const TrucksFormList = () => {
                 </div>
                 <div>
                   <p className="text-xs text-gray-600 font-medium">Idle</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {activeTrucks.filter((t) => t.status === 'idle').length}
-                  </p>
+                  <p className="text-2xl font-bold text-gray-900">{statusStats.idle}</p>
                 </div>
               </div>
             </div>
@@ -620,17 +624,15 @@ const TrucksFormList = () => {
                 </div>
                 <div>
                   <p className="text-xs text-gray-600 font-medium">Maintenance</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {activeTrucks.filter((t) => t.status === 'maintenance').length}
-                  </p>
+                  <p className="text-2xl font-bold text-gray-900">{statusStats.maintenance}</p>
                 </div>
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-blue-100 rounded-lg">
+                <div className="p-2.5 bg-gray-100 rounded-lg">
                   <svg
-                    className="w-6 h-6 text-blue-600"
+                    className="w-6 h-6 text-gray-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -639,13 +641,13 @@ const TrucksFormList = () => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                      d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
                     />
                   </svg>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600 font-medium">Filtered</p>
-                  <p className="text-2xl font-bold text-gray-900">{filtered.length}</p>
+                  <p className="text-xs text-gray-600 font-medium">Inactive</p>
+                  <p className="text-2xl font-bold text-gray-900">{statusStats.inactive}</p>
                 </div>
               </div>
             </div>

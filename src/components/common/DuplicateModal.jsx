@@ -32,29 +32,31 @@ const DuplicateModal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-white bg-opacity-95 backdrop-blur-sm transition-opacity"
         onClick={onCancel}
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 transform transition-all animate-fade-in-up">
-        {/* Icon */}
-        <div className="bg-amber-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-          <svg className="w-12 h-12" viewBox="0 0 100 100" fill="none">
-            <circle cx="50" cy="50" r="45" stroke="#F59E0B" strokeWidth="6" fill="none" />
-            <path d="M50 30 L50 55" stroke="#F59E0B" strokeWidth="6" strokeLinecap="round" />
-            <circle cx="50" cy="70" r="3" fill="#F59E0B" />
-          </svg>
-        </div>
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden p-6 transform transition-all animate-fade-in-up flex flex-col">
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto min-h-0 mb-4">
+          {/* Icon */}
+          <div className="bg-amber-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 flex-shrink-0">
+            <svg className="w-12 h-12" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="45" stroke="#F59E0B" strokeWidth="6" fill="none" />
+              <path d="M50 30 L50 55" stroke="#F59E0B" strokeWidth="6" strokeLinecap="round" />
+              <circle cx="50" cy="70" r="3" fill="#F59E0B" />
+            </svg>
+          </div>
 
-        {/* Title */}
-        <h2 className="text-2xl font-bold text-center mb-2 text-gray-800">Data Already Exists</h2>
+          {/* Title */}
+          <h2 className="text-2xl font-bold text-center mb-2 text-gray-800 flex-shrink-0">Data Already Exists</h2>
 
-        {/* Divider */}
-        <div className="w-16 h-1 bg-amber-400 rounded mx-auto mb-4" />
+          {/* Divider */}
+          <div className="w-16 h-1 bg-amber-400 rounded mx-auto mb-4 flex-shrink-0" />
 
-        {/* Message */}
-        <div className="text-center mb-6">
+          {/* Message */}
+          <div className="text-center mb-6">
           <p className="text-gray-600 mb-2">{dataType} with name</p>
           <p className="text-lg font-semibold text-gray-800 bg-amber-50 px-4 py-2 rounded-lg inline-block mb-2">
             "{itemName}"
@@ -67,9 +69,13 @@ const DuplicateModal = ({
           )}
         </div>
 
-        {/* Apply to all checkbox */}
+          {/* Action Message */}
+          <p className="text-center text-sm text-gray-500 mb-4">What would you like to do?</p>
+        </div>
+
+        {/* Apply to all checkbox - Fixed at bottom */}
         {showApplyAll && (
-          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-3 flex-shrink-0">
             <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -84,11 +90,8 @@ const DuplicateModal = ({
           </div>
         )}
 
-        {/* Action Message */}
-        <p className="text-center text-sm text-gray-500 mb-4">What would you like to do?</p>
-
-        {/* Buttons */}
-        <div className="flex flex-col gap-3">
+        {/* Buttons - Fixed at bottom */}
+        <div className="flex flex-col gap-3 flex-shrink-0">
           <button
             onClick={onOverwrite}
             className="w-full px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-medium transition-all duration-200 transform hover:scale-[1.02] active:scale-95 shadow-lg flex items-center justify-center gap-2"

@@ -1,0 +1,3 @@
+name,email,password,role,phone,department,bio,status
+John Doe Updated,john.doe@borneo.com,newpass123,admin,+62 812 9999 9999,IT & Systems - Updated,Updated Senior Administrator,active
+New User Test,newuser@borneo.com,password123,operator,+62 819 1234 5678,Testing Department,Test User for Import,active

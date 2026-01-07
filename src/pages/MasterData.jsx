@@ -45,6 +45,19 @@ const MasterData = () => {
   });
   const [applyToAll, setApplyToAll] = useState(false);
   const [userDecision, setUserDecision] = useState(null); // 'skip' or 'overwrite' or null
+  
+  // Use refs to track current values for use in async loops
+  const applyToAllRef = useRef(false);
+  const userDecisionRef = useRef(null);
+  
+  // Update refs when state changes
+  React.useEffect(() => {
+    applyToAllRef.current = applyToAll;
+  }, [applyToAll]);
+  
+  React.useEffect(() => {
+    userDecisionRef.current = userDecision;
+  }, [userDecision]);
 
   // Helper to decode JWT token (not currently used but kept for future use)
   // eslint-disable-next-line no-unused-vars
@@ -383,6 +396,8 @@ const MasterData = () => {
       // Reset states
       setApplyToAll(false);
       setUserDecision(null);
+      applyToAllRef.current = false;
+      userDecisionRef.current = null;
 
       setImportProgress({ show: true, current: 0, total: items.length, errors: [] });
 
@@ -627,10 +642,11 @@ const MasterData = () => {
           }
 
           if (isDuplicate) {
-            // Handle duplicate - check if user has already decided for all
-            let decision = userDecision;
+            // Handle duplicate - use refs to get current values
+            let decision = userDecisionRef.current;
 
-            if (!applyToAll || !decision) {
+            // Only ask if we don't have a saved decision yet
+            if (decision === null) {
               // Ask user what to do
               const itemIdentifier = item[Object.keys(item)[0]] || `Row ${i + 2}`;
               decision = await askUserDecision(itemIdentifier, errorMessage);
@@ -648,10 +664,9 @@ const MasterData = () => {
                 return;
               }
 
-              // If apply to all is checked, save this decision
-              if (applyToAll) {
-                setUserDecision(decision);
-              }
+              // Save decision to both state and ref for immediate use
+              setUserDecision(decision);
+              userDecisionRef.current = decision;
             }
 
             if (decision === 'skip') {

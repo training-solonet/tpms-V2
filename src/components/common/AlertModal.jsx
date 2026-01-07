@@ -117,9 +117,9 @@ const AlertModal = ({
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 transform transition-all animate-fade-in-up">
+      <div className="relative bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-hidden p-8 transform transition-all animate-fade-in-up flex flex-col">
         {/* Decorative Wave Background */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 overflow-hidden rounded-b-3xl opacity-10">
+        <div className="absolute bottom-0 left-0 right-0 h-32 overflow-hidden rounded-b-3xl opacity-10 pointer-events-none">
           <svg
             className="absolute bottom-0 w-full"
             viewBox="0 0 1440 320"
@@ -142,28 +142,30 @@ const AlertModal = ({
           </svg>
         </div>
 
-        {/* Icon */}
+        {/* Icon - Fixed */}
         <div
-          className={`${config.iconBg} rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6 relative z-10`}
+          className={`${config.iconBg} rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6 relative z-10 flex-shrink-0`}
         >
           {config.icon}
         </div>
 
-        {/* Title */}
-        <h2 className={`text-3xl font-bold text-center mb-3 ${config.titleColor}`}>
+        {/* Title - Fixed */}
+        <h2 className={`text-3xl font-bold text-center mb-3 ${config.titleColor} flex-shrink-0`}>
           {title || config.defaultTitle}
         </h2>
 
-        {/* Divider */}
-        <div className="w-16 h-1 bg-gray-300 rounded mx-auto mb-4" />
+        {/* Divider - Fixed */}
+        <div className="w-16 h-1 bg-gray-300 rounded mx-auto mb-4 flex-shrink-0" />
 
-        {/* Message */}
-        <p className="text-gray-600 text-center text-base leading-relaxed mb-8">
-          {message || config.defaultMessage}
-        </p>
+        {/* Message - Scrollable */}
+        <div className="flex-1 overflow-y-auto mb-8 min-h-0">
+          <p className="text-gray-600 text-center text-base leading-relaxed">
+            {message || config.defaultMessage}
+          </p>
+        </div>
 
-        {/* Buttons */}
-        <div className="flex gap-3 relative z-10">
+        {/* Buttons - Fixed */}
+        <div className="flex gap-3 relative z-10 flex-shrink-0">
           {showCancel && (
             <button
               onClick={onCancel}

@@ -1,0 +1,7 @@
+name,email,password,role,phone,department,bio,status
+John Doe,john.doe@borneo.com,password123,admin,+62 812 3456 7890,IT & Systems,Senior Fleet Administrator,active
+Jane Smith,jane.smith@borneo.com,password123,admin,+62 813 4567 8901,Operations,Fleet Operations Manager,active
+Mike Johnson,mike.johnson@borneo.com,password123,operator,+62 814 5678 9012,Field Operations,Field Supervisor,active
+Sarah Williams,sarah.williams@borneo.com,password123,operator,+62 815 6789 0123,Maintenance,Maintenance Coordinator,active
+Robert Brown,robert.brown@borneo.com,password123,viewer,+62 816 7890 1234,Finance,Financial Analyst,active
+Emily Davis,emily.davis@borneo.com,password123,viewer,+62 817 8901 2345,HR,HR Manager,inactive

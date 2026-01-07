@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import managementClient from '../services/management/config';
 import TailwindLayout from '../components/layout/TailwindLayout';
 import AlertModal from '../components/common/AlertModal';
+import ImportPreviewModal from '../components/common/ImportPreviewModal';
 import {
   UserIcon,
   UserPlusIcon,
@@ -53,6 +54,11 @@ const Settings = () => {
     errors: [],
   });
   const [importMode, setImportMode] = useState('skip'); // 'skip' or 'overwrite'
+  const [importPreview, setImportPreview] = useState({
+    show: false,
+    data: [],
+    file: null,
+  });
 
   const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
   const BASE_URL = API_URL.replace('/api', ''); // Base URL without /api for static files
@@ -536,9 +542,18 @@ const Settings = () => {
         headers.forEach((header, index) => {
           row[header] = values[index];
         });
-        // Only add if email is present (required field)
-        if (row.email && row.email.trim()) {
-          data.push(row);
+        // Validate required fields and format
+        const email = row.email?.trim();
+        const role = row.role?.toLowerCase().trim();
+        
+        // Only add if email is valid and role is allowed
+        if (email && email.includes('@')) {
+          // Validate role
+          if (!role || ['admin', 'operator', 'viewer'].includes(role)) {
+            data.push(row);
+          } else {
+            console.warn(`Invalid role "${row.role}" for ${email}, skipping row`);
+          }
         }
       }
     }
@@ -546,7 +561,7 @@ const Settings = () => {
     return data;
   };
 
-  // Import users from CSV
+  // Import users from CSV - Show preview first
   const handleImportCSV = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -575,23 +590,71 @@ const Settings = () => {
         return;
       }
 
-      // Show progress
-      setImportProgress({ show: true, current: 0, total: users.length, errors: [] });
+      // Show preview and ask for confirmation
+      setImportPreview({
+        show: true,
+        data: users,
+        file: file.name,
+      });
+    } catch (error) {
+      console.error('Failed to parse CSV:', error);
+      setAlertModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Parse Failed',
+        message: 'Failed to read CSV file: ' + error.message,
+      });
+    }
+  };
 
-      let successCount = 0;
-      let skippedCount = 0;
-      let updatedCount = 0;
-      const errors = [];
+  // Actually execute the import after confirmation
+  const executeImport = async () => {
+    const users = importPreview.data;
+    
+    // Hide preview
+    setImportPreview({ show: false, data: [], file: null });
 
+    // Show progress
+    setImportProgress({ show: true, current: 0, total: users.length, errors: [] });
+
+    let successCount = 0;
+    let skippedCount = 0;
+    let updatedCount = 0;
+    const errors = [];
+
+    try {
       for (let i = 0; i < users.length; i++) {
         const user = users[i];
+        
+        // Validate email format
+        if (!user.email || !user.email.includes('@')) {
+          errors.push({
+            row: i + 2,
+            email: user.email || 'N/A',
+            error: 'Invalid email format',
+          });
+          setImportProgress((prev) => ({ ...prev, current: i + 1 }));
+          continue;
+        }
         try {
+          // Validate password length for new users
+          const password = user.password || 'default123';
+          if (password.length < 6) {
+            errors.push({
+              row: i + 2,
+              email: user.email,
+              error: 'Password must be at least 6 characters',
+            });
+            setImportProgress((prev) => ({ ...prev, current: i + 1 }));
+            continue;
+          }
+          
           // Try to create new user
           await managementClient.post('/users', {
             name: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
             email: user.email,
-            password: user.password || 'default123',
-            role: user.role || 'operator',
+            password: password,
+            role: user.role || 'admin',
             phone: user.phone || null,
             department: user.department || null,
             bio: user.bio || null,
@@ -600,11 +663,16 @@ const Settings = () => {
           successCount++;
         } catch (error) {
           // Check if error is duplicate email
+          // Backend returns: {success: false, message: "Email already exists"}
+          const errorMessage = error.response?.data?.message || error.message || '';
           const isDuplicate =
-            error.response?.data?.message?.toLowerCase().includes('email') &&
-            (error.response?.data?.message?.toLowerCase().includes('exists') ||
-              error.response?.data?.message?.toLowerCase().includes('already') ||
-              error.response?.data?.message?.toLowerCase().includes('unique'));
+            errorMessage.toLowerCase().includes('email') &&
+            (errorMessage.toLowerCase().includes('exists') ||
+              errorMessage.toLowerCase().includes('already') ||
+              errorMessage.toLowerCase().includes('unique') ||
+              errorMessage.toLowerCase().includes('duplicate'));
+
+          console.log('🔍 Import error for', user.email, ':', errorMessage, '| isDuplicate:', isDuplicate);
 
           if (isDuplicate) {
             if (importMode === 'skip') {
@@ -630,9 +698,10 @@ const Settings = () => {
 
                 if (existingUser) {
                   // Update the existing user
+                  console.log('🔄 Updating user:', existingUser.id, user.email);
                   await managementClient.put(`/users/${existingUser.id}`, {
                     name: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-                    role: user.role || 'operator',
+                    role: user.role || 'admin',
                     phone: user.phone || null,
                     department: user.department || null,
                     bio: user.bio || null,
@@ -640,40 +709,59 @@ const Settings = () => {
                     // Note: password not updated for security
                   });
                   updatedCount++;
+                  console.log('✅ Successfully updated:', user.email);
                 } else {
                   errors.push({
                     row: i + 2,
                     email: user.email,
                     error: 'User exists but could not be found for update',
+                    type: 'failed',
                   });
                 }
               } catch (updateError) {
+                console.error('❌ Failed to update user:', user.email, updateError.response?.data);
                 errors.push({
                   row: i + 2,
                   email: user.email,
-                  error: updateError.response?.data?.message || 'Failed to update existing user',
+                  error: updateError.response?.data?.message || updateError.message || 'Failed to update existing user',
+                  type: 'failed',
                 });
               }
             }
           } else {
             // Other errors (not duplicate)
+            console.error('❌ Other error for', user.email, ':', errorMessage);
             errors.push({
               row: i + 2,
               email: user.email,
-              error: error.response?.data?.message || 'Failed to create user',
+              error: errorMessage || 'Failed to create user',
+              type: 'failed',
             });
           }
         }
         setImportProgress((prev) => ({ ...prev, current: i + 1 }));
       }
+    } catch (error) {
+      console.error('Critical error during import:', error);
+      setImportProgress({ show: false, current: 0, total: 0, errors: [] });
+      setAlertModal({
+        isOpen: true,
+        type: 'error',
+        title: 'Import Failed',
+        message: 'A critical error occurred during import: ' + error.message,
+      });
+      return;
+    }
 
-      // Hide progress
-      setTimeout(() => {
-        setImportProgress({ show: false, current: 0, total: 0, errors: [] });
-      }, 2000);
+    // Hide progress
+    setTimeout(() => {
+      setImportProgress({ show: false, current: 0, total: 0, errors: [] });
+    }, 2000);
 
       // Show result
       const failedCount = errors.filter((e) => e.type !== 'skipped').length;
+      const skippedErrors = errors.filter((e) => e.type === 'skipped');
+      const failedErrors = errors.filter((e) => e.type !== 'skipped');
 
       let message = `Import Complete:\n\n`;
       message += `✅ Created: ${successCount}\n`;
@@ -682,34 +770,31 @@ const Settings = () => {
       if (failedCount > 0) message += `❌ Failed: ${failedCount}\n`;
       message += `\nTotal: ${users.length} rows`;
 
-      const hasErrors = failedCount > 0;
-      const errorDetails = errors.filter((e) => e.type !== 'skipped');
+      // Show ALL errors (both skipped and failed)
+      const hasAnyIssues = errors.length > 0;
 
-      setAlertModal({
-        isOpen: true,
-        type: hasErrors ? 'warning' : 'success',
-        title: 'Import Complete',
-        message:
-          message +
-          (hasErrors
-            ? '\n\nErrors:\n' +
-              errorDetails.map((e) => `Row ${e.row} (${e.email}): ${e.error}`).join('\n')
-            : ''),
-      });
-
-      // Reset file input
-      if (csvImportRef.current) {
-        csvImportRef.current.value = '';
+      if (hasAnyIssues) {
+        message += '\n\n━━━━━━━━━━━━━━━━━━━━━━━━';
+        if (skippedErrors.length > 0) {
+          message += '\n\n⏭️ Skipped (Mode: Skip Duplicates):\n';
+          message += skippedErrors.map((e) => `• Row ${e.row} (${e.email}): ${e.error}`).join('\n');
+        }
+        if (failedErrors.length > 0) {
+          message += '\n\n❌ Failed:\n';
+          message += failedErrors.map((e) => `• Row ${e.row} (${e.email}): ${e.error}`).join('\n');
+        }
       }
-    } catch (error) {
-      console.error('Failed to import CSV:', error);
-      setImportProgress({ show: false, current: 0, total: 0, errors: [] });
+
       setAlertModal({
         isOpen: true,
-        type: 'error',
-        title: 'Import Failed',
-        message: 'Failed to process CSV file: ' + error.message,
+        type: failedCount > 0 ? 'warning' : skippedCount > 0 ? 'info' : 'success',
+        title: 'Import Complete',
+        message: message,
       });
+
+    // Reset file input
+    if (csvImportRef.current) {
+      csvImportRef.current.value = '';
     }
   };
 
@@ -1596,6 +1681,21 @@ const Settings = () => {
         message={alertModal.message}
         onConfirm={() => setAlertModal({ ...alertModal, isOpen: false })}
         confirmText="OK"
+      />
+
+      {/* Import Preview Modal */}
+      <ImportPreviewModal
+        isOpen={importPreview.show}
+        data={importPreview.data}
+        fileName={importPreview.file}
+        importMode={importMode}
+        onCancel={() => {
+          setImportPreview({ show: false, data: [], file: null });
+          if (csvImportRef.current) {
+            csvImportRef.current.value = '';
+          }
+        }}
+        onConfirm={executeImport}
       />
     </TailwindLayout>
   );
