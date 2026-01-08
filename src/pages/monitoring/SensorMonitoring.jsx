@@ -213,7 +213,7 @@ export default function SensorMonitoring() {
 
   return (
     <TailwindLayout>
-      <div className="max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8 max-h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-400 scrollbar-track-slate-100">
+      <div className="max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8">
         {/* Header */}
         <div className="mb-6">
           <div className="flex justify-between items-start">

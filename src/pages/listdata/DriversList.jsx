@@ -546,7 +546,7 @@ export default function DriversList() {
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between w-[120px]">
+                    <Button variant="outline" className="justify-between w-[120px] whitespace-nowrap">
                       {pageSize} / Page
                       <svg
                         className="ml-2 w-4 h-4"

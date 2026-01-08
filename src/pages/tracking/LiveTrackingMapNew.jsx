@@ -868,18 +868,33 @@ const LiveTrackingMapNew = () => {
           status // Fungsi untuk build custom icon
         ) =>
           L.divIcon({
-            html: ` 
-            <div style="position: relative;">
-              <div style="background: ${colors[status] || colors.offline}; color: #ffffff; border: 2px solid #ffffff; border-radius: 6px; padding: 2px 6px; min-width: 32px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); line-height: 1;">
-                <span style="font-size: 9px; opacity: 0.8; margin-right: 2px;">#${visualNum}</span>
-                <span style="font-size: 11px;">${truckNum}</span>
+            html: `
+              <div style="position: relative;">
+                <div style="background: ${colors[status] || colors.offline}; color: #ffffff; border: 2px solid #ffffff; border-radius: 6px; padding: 2px 6px; min-width: 26px; height: 20px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.25);">
+                  ${truckNum}
+                </div>
+                <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid ${colors[status] || colors.offline}; margin: 0 auto; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));"></div>
               </div>
-              <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid ${colors[status] || colors.offline}; margin: 0 auto; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));"></div>
-            </div>
-          `, // HTML untuk icon dengan nomor urut visual dan nomor truk tetap
+            `,
+          
+          //   html: ` 
+          //   <div style="position: relative;">
+          //     <div style="background: ${colors[status] || colors.offline}; color: #ffffff; border: 2px solid #ffffff; border-radius: 6px; padding: 2px 6px; min-width: 16px; height: 12px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); line-height: 1;">
+          //       <span style="font-size: 8px;">${truckNum}</span>
+          //     </div>
+          //     <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid ${colors[status] || colors.offline}; margin: 0 auto; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));"></div>
+          //   </div>
+          // `,
+
+          //tambahkan kode dibawah di dalam div style background diatas untuk tambah nomor urut
+          //  <span style="font-size: 9px; opacity: 0.8; margin-right: 2px;">#${visualNum}</span>
+          // HTML untuk icon dengan nomor urut visual dan nomor truk tetap
             className: 'custom-truck-icon', // Class CSS
-            iconSize: [36, 32], // Ukuran icon sedikit lebih besar untuk menampung 2 nomor
-            iconAnchor: [18, 32], // Anchor point (bottom center)
+            // iconSize: [36, 32], // Ukuran icon sedikit lebih besar untuk menampung 2 nomor
+            // iconAnchor: [18, 32], // Anchor point (bottom center)
+            //ubah ukuran icon juga ubah ukuran di html diatas
+            iconSize: [28, 28], // Ukuran icon sedikit lebih kecil untuk menampung  nomor
+            iconAnchor: [14, 28], // Anchor point (bottom center)
           });
 
         let marker = existing[vehicle.id]; // Cek apakah marker sudah ada

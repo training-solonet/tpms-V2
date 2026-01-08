@@ -253,14 +253,18 @@ borneo-indobara/
 ├── 📄 vite.config.js                # Konfigurasi Vite build tool
 ├── 📄 tailwind.config.js            # Konfigurasi Tailwind CSS
 ├── 📄 eslint.config.js              # Aturan code linting ESLint
+├── 📄 .env                          # Environment variables (tidak di-commit)
 ├── 📄 .env.example                  # Template untuk environment variables
 ├── 📄 README.md                     # Dokumentasi utama proyek (file ini)
 ├── 📄 documentation.md              # Dokumentasi teknis detail
+├── 📄 route1.md                     # Dokumentasi route 1
+├── 📄 route2.md                     # Dokumentasi route 2
 │
 ├── 📁 public/                       # File statis yang tidak diproses
 │   └── images/                      # Gambar logo, icon, dll
 │
 ├── 📁 screenshots/                  # Screenshot untuk dokumentasi
+│   ├── usecase.png                  # Gambar use case diagram
 │   ├── livetracking.png             # Gambar halaman live tracking
 │   ├── history.png                  # Gambar halaman history
 │   ├── dashboard.png                # Gambar dashboard
@@ -271,7 +275,10 @@ borneo-indobara/
 │   ├── import-test-drivers.csv      # Contoh format import driver
 │   ├── import-test-sensors.csv      # Contoh format import sensor
 │   ├── import-test-devices.csv      # Contoh format import device
-│   └── import-test-vendors.csv      # Contoh format import vendor
+│   ├── import-test-vendors.csv      # Contoh format import vendor
+│   ├── import-trucks-from-44.csv    # Data import truck dari sistem 44
+│   ├── test-user-import.csv         # Contoh format import user
+│   └── test-user-update.csv         # Contoh format update user
 │
 └── 📁 src/                          # Folder source code utama
     ├── 📄 main.jsx                  # Entry point aplikasi React
@@ -343,10 +350,7 @@ borneo-indobara/
     │   │   └── Alerts.jsx           # Tabel daftar alert/notifikasi
     │   │
     │   ├── 📁 monitoring/           # Halaman monitoring kondisi
-    │   │   ├── TirePressureMonitoring.jsx  # Monitor tekanan ban
-    │   │   ├── TemperatureMonitoring.jsx   # Monitor suhu kendaraan
-    │   │   ├── SensorMonitoring.jsx # Monitor status sensor
-    │   │   └── VehicleDeviceStatus.jsx # Monitor status device
+    │   │   └── SensorMonitoring.jsx # Monitor status sensor
     │   │
     │   └── 📁 tracking/             # Komponen tambahan tracking
     │
@@ -403,22 +407,17 @@ borneo-indobara/
 
 ## 📸 Screenshots
 
-### 1. Login Page
-
-![Login](./screenshots/login.png)
-*Halaman login dengan autentikasi aman*
-
-### 2. Dashboard
+### 1. Dashboard
 
 ![Dashboard](./screenshots/dashboard.png)
 *Dashboard utama dengan statistik armada, charts, dan overview*
 
-### 3. Live Tracking
+### 2. Live Tracking
 
 ![Live Tracking](./screenshots/livetracking.png)
 *Peta real-time tracking kendaraan dengan marker dan status monitoring*
 
-### 4. History Tracking
+### 3. History Tracking
 
 ![History Tracking](./screenshots/history.png)
 *Riwayat perjalanan kendaraan dengan playback control dan data tracking lengkap*
@@ -427,85 +426,74 @@ borneo-indobara/
 
 ## Monitoring Pages
 
-### 5. Tire Pressure Monitoring (TPMS)
-
-![TPMS Monitoring](./screenshots/tpms-monitoring.png)
-*Monitor tekanan dan suhu 10 ban per kendaraan secara real-time*
-
-### 6. Temperature and Pressure Monitoring
-
-
-
-### 8. Vehicle Device Status
-
-![Device Status](./screenshots/device-status.png)
-*Status koneksi dan kesehatan device IoT/GPS*
+### 4. Temperature and Pressure Monitoring
+![TPMS Monitoring](./screenshots/monitoringsensor.png)
 
 ---
 
 ## Fleet Management - List Data
 
-### 9. Vehicles List
+### 5. Vehicles List
 
 ![Vehicles List](./screenshots/listvehicle.png)
 _Daftar kendaraan dengan informasi lengkap dan fitur search/filter_
 
-### 10. Drivers List
+### 6. Drivers List
 
 ![Drivers List](./screenshots/listdriver.png)
 _Daftar pengemudi dengan data lisensi dan status_
 
-### 11. Sensors List
+### 7. Sensors List
 
 ![Sensors List](./screenshots/listsensor.png)
 _Daftar sensor TPMS yang terpasang pada kendaraan_
 
-### 12. Devices List
+### 8. Devices List
 
 ![Devices List](./screenshots/listdevice.png)
 _Daftar perangkat IoT dan GPS tracker_
 
-### 13. Vendors List
+### 9. Vendors List
 
 ![Vendors List](./screenshots/listvendor.png)
 _Daftar vendor dan kontraktor yang bekerja sama_
 
-### 14. Alerts List
+### 10. Alerts List
 
-![Alerts List](./screenshots/alerts.png)
+![Alerts List](./screenshots/listalert.png)
 _Daftar notifikasi dan peringatan sistem dengan filter_
 
 ---
 
 ## Forms - Create/Edit Data
 
-### 15. Add New Vehicle
+### 11. Add New Vehicle
 
 ![New Vehicle Form](./screenshots/newvehicle.png)
 _Form input data kendaraan baru dengan DatePicker dan upload foto_
 
-### 16. Add New Driver
+### 12. Add New Driver
 
 ![New Driver Form](./screenshots/newdriver.png)
 _Form input data pengemudi dengan informasi lisensi dan kontak_
 
-### 17. Add New Sensor
+### 13. Add New Sensor
 
 ![New Sensor Form](./screenshots/newsensor.png)
 _Form konfigurasi sensor TPMS dengan posisi ban_
 
-### 18. Add New Device
+### 14. Add New Device
 
 ![New Device Form](./screenshots/newdevice.png)
 _Form registrasi perangkat IoT/GPS baru_
 
-### 19. Add New Vendor
+### 15. Add New Vendor
 
 ![New Vendor Form](./screenshots/newvendor.png)
 _Form registrasi vendor dan kontraktor baru_
 
 
-### 20. Settings
+### 16. Settings
 
 ![Settings](./screenshots/settings.png)
 _Halaman pengaturan aplikasi dan profil pengguna_

@@ -772,7 +772,7 @@ const Sensors = () => {
                 {/* Per Page Selector */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="justify-between min-w-[120px]">
+                    <Button variant="outline" className="justify-between min-w-[120px] whitespace-nowrap">
                       {pageSize} / page
                       <svg
                         className="ml-2 w-4 h-4"
