@@ -974,6 +974,57 @@ const MasterData = () => {
               </ul>
             </div>
 
+            {/* Import Order Warning */}
+            <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-lg">
+              <h4 className="text-sm font-bold text-amber-900 mb-3 flex items-center">
+                <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fillRule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                ⚠️ IMPORTANT: Import Order Sequence
+              </h4>
+              <p className="text-xs text-amber-900 mb-3 font-medium">
+                Data must be imported in the correct order due to dependencies. Follow this sequence:
+              </p>
+              <div className="flex items-center justify-center mb-3">
+                <div className="flex items-center space-x-2 text-xs font-bold text-amber-900">
+                  <div className="bg-indigo-100 border-2 border-indigo-400 px-3 py-2 rounded-lg shadow-sm">
+                    1️⃣ Vendors
+                  </div>
+                  <span className="text-amber-700">→</span>
+                  <div className="bg-purple-100 border-2 border-purple-400 px-3 py-2 rounded-lg shadow-sm">
+                    2️⃣ Drivers
+                  </div>
+                  <span className="text-amber-700">→</span>
+                  <div className="bg-orange-100 border-2 border-orange-400 px-3 py-2 rounded-lg shadow-sm">
+                    3️⃣ Trucks
+                  </div>
+                  <span className="text-amber-700">→</span>
+                  <div className="bg-blue-100 border-2 border-blue-400 px-3 py-2 rounded-lg shadow-sm">
+                    4️⃣ Devices
+                  </div>
+                  <span className="text-amber-700">→</span>
+                  <div className="bg-green-100 border-2 border-green-400 px-3 py-2 rounded-lg shadow-sm">
+                    5️⃣ Sensors
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white/50 p-3 rounded border border-amber-200">
+                <p className="text-xs text-amber-900 mb-2 font-semibold">Why this order matters:</p>
+                <ul className="text-xs text-amber-800 space-y-1 ml-4">
+                  <li>• <strong>Vendors first:</strong> Drivers and Trucks require valid vendor_id</li>
+                  <li>• <strong>Trucks before Devices:</strong> Devices require valid truck_id</li>
+                  <li>• <strong>Devices before Sensors:</strong> Sensors require valid device_id</li>
+                </ul>
+                <p className="text-xs text-amber-900 mt-3 font-medium">
+                  ❌ Importing out of order will result in errors due to missing references.
+                </p>
+              </div>
+            </div>
+
             {/* Data Type Selector */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">

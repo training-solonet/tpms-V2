@@ -272,7 +272,7 @@ const Alerts = () => {
 
   return (
     <TailwindLayout>
-      <div className="min-h-screen bg-linear-to-br from-slate-50 to-indigo-50 p-6 max-h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-400 scrollbar-track-slate-100">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 to-indigo-50 p-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-6 flex items-center justify-between">
