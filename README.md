@@ -62,7 +62,6 @@ Menampilkan rekaman perjalanan kendaraan dengan fitur playback.
 - **Replay Perjalanan**: Putar ulang rute perjalanan di peta
 - **Detail Tracking**: Lihat kecepatan, waktu, dan posisi setiap titik
 - **Export Data**: Unduh data riwayat dalam format CSV
-- **Analisis Rute**: Identifikasi pola perjalanan kendaraan
 
 ### 3. 📊 Monitoring
 
@@ -112,14 +111,11 @@ Kelola perangkat GPS dan IoT yang terpasang di kendaraan.
 - **Device Management**: IMEI, nomor SIM card, firmware version
 - **Status Koneksi**: Monitor konektivitas real-time
 - **Assignment**: Hubungkan device dengan kendaraan
-- **Configuration**: Setup dan konfigurasi perangkat
 
 #### Sensor Management
 Kelola sensor TPMS yang terpasang di ban kendaraan.
 
 - **Sensor TPMS**: ID sensor, posisi ban (FR, FL, RR1-4, RL1-4)
-- **Status Battery**: Monitor daya battery sensor
-- **Kalibrasi**: Setup dan kalibrasi sensor
 - **Assignment**: Hubungkan sensor dengan kendaraan tertentu
 
 ### 6. 📦 Master Data
